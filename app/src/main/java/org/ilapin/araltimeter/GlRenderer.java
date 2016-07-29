@@ -8,7 +8,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GlRenderer implements GLSurfaceView.Renderer {
 
-//	private
+	private Scene mScene;
+	private int mWidth, mHeight;
 
 	@Override
 	public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
@@ -22,11 +23,23 @@ public class GlRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
+		mWidth = width;
+		mHeight = height;
 
+		if (mScene != null) {
+			mScene.setViewportSize(mWidth, mHeight);
+		}
 	}
 
 	@Override
 	public void onDrawFrame(final GL10 gl) {
+		if (mScene != null) {
+			mScene.render();
+		}
+	}
 
+	public void setScene(final Scene scene) {
+		mScene = scene;
+		mScene.setViewportSize(mWidth, mHeight);
 	}
 }
