@@ -1,4 +1,4 @@
-package org.ilapin.araltimeter;
+package org.ilapin.araltimeter.graphics;
 
 import com.google.common.base.Preconditions;
 
