@@ -1,35 +1,51 @@
 package org.ilapin.araltimeter.graphics;
 
+import android.opengl.Matrix;
+
 import org.ilapin.araltimeter.math.Coordinate3D;
 
 public class Camera {
 
-	private Coordinate3D mPosition = new Coordinate3D();
-	private Coordinate3D mAngles = new Coordinate3D();
+	private Coordinate3D mPosition;
+	private Coordinate3D mRotation;
 	private int mWidth;
 	private int mHeight;
+	private float[] mProjectionMatrix;
 
 	public Camera() {}
 
 	public Camera(final int width, final int height) {
 		mWidth = width;
 		mHeight = height;
+
+		mPosition = new Coordinate3D();
+		mRotation = new Coordinate3D();
+	}
+
+	public void updateProjectionMatrix() {
+		final float aspectRatio = (float) mWidth / mHeight;
+		mProjectionMatrix = new float[16];
+		Matrix.frustumM(mProjectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, 1, 1000);
+	}
+
+	public float[] getProjectionMatrix() {
+		return mProjectionMatrix;
 	}
 
 	public void setPosition(final Coordinate3D position) {
-		mPosition = new Coordinate3D(position);
+		mPosition = position;
 	}
 
-	public void setAngles(final Coordinate3D angles) {
-		mAngles = new Coordinate3D(angles);
+	public void setRotation(final Coordinate3D rotation) {
+		mRotation = rotation;
 	}
 
 	public Coordinate3D getPosition() {
-		return new Coordinate3D(mPosition);
+		return mPosition;
 	}
 
-	public Coordinate3D getAngles() {
-		return new Coordinate3D(mAngles);
+	public Coordinate3D getRotation() {
+		return mRotation;
 	}
 
 	public int getWidth() {

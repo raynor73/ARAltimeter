@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 		final GlRenderer renderer = new GlRenderer();
 		glView.setRenderer(renderer);
 
-		final Scene scene = new Scene();
+		final Scene scene = new Scene(this);
 		renderer.setScene(scene);
 	}
 }
