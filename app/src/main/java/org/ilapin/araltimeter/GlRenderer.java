@@ -29,7 +29,7 @@ public class GlRenderer implements GLSurfaceView.Renderer {
 		mHeight = height;
 
 		if (mScene != null) {
-			mScene.setViewportSize(mWidth, mHeight);
+			initScene();
 		}
 	}
 
@@ -42,6 +42,13 @@ public class GlRenderer implements GLSurfaceView.Renderer {
 
 	public void setScene(final Scene scene) {
 		mScene = scene;
+		if (mWidth > 0 && mHeight > 0) {
+			initScene();
+		}
+	}
+
+	private void initScene() {
 		mScene.setViewportSize(mWidth, mHeight);
+		mScene.initShaders();
 	}
 }

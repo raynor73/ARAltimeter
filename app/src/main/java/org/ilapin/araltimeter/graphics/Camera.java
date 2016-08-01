@@ -6,8 +6,8 @@ import org.ilapin.araltimeter.math.Coordinate3D;
 
 public class Camera {
 
-	private Coordinate3D mPosition;
-	private Coordinate3D mRotation;
+	private Coordinate3D mPosition = new Coordinate3D();
+	private Coordinate3D mRotation = new Coordinate3D();
 	private int mWidth;
 	private int mHeight;
 	private float[] mProjectionMatrix;
@@ -17,9 +17,6 @@ public class Camera {
 	public Camera(final int width, final int height) {
 		mWidth = width;
 		mHeight = height;
-
-		mPosition = new Coordinate3D();
-		mRotation = new Coordinate3D();
 	}
 
 	public void updateProjectionMatrix() {

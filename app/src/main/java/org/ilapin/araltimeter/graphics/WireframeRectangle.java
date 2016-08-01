@@ -10,7 +10,7 @@ import org.ilapin.araltimeter.math.Coordinate3D;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class WireframeRectangle implements Renderable {
+public class WireframeRectangle implements Renderable, WithShaders {
 
 	private static final int NUMBER_OF_VERTICES = 4;
 	private static final int NUMBER_OF_VERTEX_DIMENSIONS = 3;
@@ -25,13 +25,13 @@ public class WireframeRectangle implements Renderable {
 	private final Context mContext;
 	private final Scene mScene;
 
-	private final int mShaderProgramLocation;
-	private final int mVertexBufferLocation;
-	private final int mIndexBufferLocation;
-	private final int mPositionAttributeLocation;
-	private final int mColorUniformLocation;
-	private final int mProjectionUniformLocation;
-	private final int mModelViewUniformLocation;
+	private int mShaderProgramLocation;
+	private int mVertexBufferLocation;
+	private int mIndexBufferLocation;
+	private int mPositionAttributeLocation;
+	private int mColorUniformLocation;
+	private int mProjectionUniformLocation;
+	private int mModelViewUniformLocation;
 
 	private final float[] mModelViewMatrix = new float[GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS];
 	private final FloatBuffer mModelViewMatrixBuffer;
@@ -59,12 +59,20 @@ public class WireframeRectangle implements Renderable {
 
 		recalculateVertices();
 
+		mModelViewMatrixBuffer = GraphicsUtils.createFloatBuffer(GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS);
+		mProjectionMatrixBuffer = GraphicsUtils.createFloatBuffer(GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS);
+		mColorBuffer = GraphicsUtils.createFloatBuffer(NUMBER_OF_COLOR_COMPONENTS);
+	}
+
+	@Override
+	public void initShaders() {
 		mShaderProgramLocation = initShadersProgram();
+
 		mVertexBufferLocation = GraphicsUtils.initFloatBufferObject(GLES20.GL_ARRAY_BUFFER, mVertices);
 		mIndexBufferLocation = GraphicsUtils.initIntBufferObject(GLES20.GL_ELEMENT_ARRAY_BUFFER, mIndices);
 
 		mPositionAttributeLocation = GLES20.glGetAttribLocation(mShaderProgramLocation, "position");
-		mColorUniformLocation = GLES20.glGetAttribLocation(mShaderProgramLocation, "color");
+		mColorUniformLocation = GLES20.glGetUniformLocation(mShaderProgramLocation, "color");
 		mProjectionUniformLocation = GLES20.glGetUniformLocation(mShaderProgramLocation, "projection");
 		mModelViewUniformLocation = GLES20.glGetUniformLocation(mShaderProgramLocation, "modelView");
 
@@ -72,10 +80,6 @@ public class WireframeRectangle implements Renderable {
 		GraphicsUtils.checkLocation(mColorUniformLocation, "Can't acquire color uniform");
 		GraphicsUtils.checkLocation(mProjectionUniformLocation, "Can't acquire projection uniform");
 		GraphicsUtils.checkLocation(mModelViewUniformLocation, "Can't acquire modelView uniform");
-
-		mModelViewMatrixBuffer = GraphicsUtils.createFloatBuffer(GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS);
-		mProjectionMatrixBuffer = GraphicsUtils.createFloatBuffer(GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS);
-		mColorBuffer = GraphicsUtils.createFloatBuffer(NUMBER_OF_COLOR_COMPONENTS);
 	}
 
 	@Override
