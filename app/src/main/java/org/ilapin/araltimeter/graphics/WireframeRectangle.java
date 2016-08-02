@@ -3,7 +3,6 @@ package org.ilapin.araltimeter.graphics;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-
 import org.ilapin.araltimeter.R;
 import org.ilapin.araltimeter.math.Coordinate3D;
 
@@ -113,7 +112,7 @@ public class WireframeRectangle implements Renderable, WithShaders {
 		mColorData[1] = mColor.getGreen();
 		mColorData[2] = mColor.getBlue();
 		mColorData[3] = mColor.getAlpha();
-		GraphicsUtils.copyDataToBuffer(mColorData, mColorBuffer);
+		GLES20.glUniform4fv(mColorUniformLocation, 1, mColorData, 0);
 
 		GLES20.glVertexAttribPointer(
 				mPositionAttributeLocation,
@@ -125,7 +124,6 @@ public class WireframeRectangle implements Renderable, WithShaders {
 		);
 		GLES20.glUniformMatrix4fv(mProjectionUniformLocation, 1, false, mProjectionMatrixBuffer);
 		GLES20.glUniformMatrix4fv(mModelViewUniformLocation, 1, false, mModelViewMatrixBuffer);
-		GLES20.glUniformMatrix4fv(mColorUniformLocation, 1, false, mColorBuffer);
 
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_INT, 0);
 
