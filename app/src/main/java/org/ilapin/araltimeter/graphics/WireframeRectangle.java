@@ -38,8 +38,10 @@ public class WireframeRectangle implements Renderable, WithShaders {
 
 	private final float[] mVertices = new float[NUMBER_OF_VERTICES * NUMBER_OF_VERTEX_DIMENSIONS];
 	private final int[] mIndices = new int[] {
-			0, 1, 2,
-			2, 3, 0
+			0, 1,
+			1, 2,
+			2, 3,
+			3, 0
 	};
 
 	private final float[] mColorData = new float[NUMBER_OF_COLOR_COMPONENTS];
@@ -125,7 +127,7 @@ public class WireframeRectangle implements Renderable, WithShaders {
 		GLES20.glUniformMatrix4fv(mProjectionUniformLocation, 1, false, mProjectionMatrixBuffer);
 		GLES20.glUniformMatrix4fv(mModelViewUniformLocation, 1, false, mModelViewMatrixBuffer);
 
-		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_INT, 0);
+		GLES20.glDrawElements(GLES20.GL_LINES, mIndices.length, GLES20.GL_UNSIGNED_INT, 0);
 
 		GLES20.glDisableVertexAttribArray(mPositionAttributeLocation);
 	}
