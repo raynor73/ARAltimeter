@@ -2,8 +2,10 @@ package org.ilapin.araltimeter.graphics;
 
 import android.content.Context;
 import android.opengl.GLES20;
-
 import com.google.common.base.Preconditions;
+import org.ilapin.araltimeter.Controller;
+import org.ilapin.araltimeter.GlView;
+import org.ilapin.araltimeter.math.Coordinate3D;
 
 public class Scene implements Renderable, WithShaders {
 
@@ -11,11 +13,20 @@ public class Scene implements Renderable, WithShaders {
 
 	private final WireframeRectangle mRectangle;
 
-	public Scene(final Context context) {
+	public Scene(final Context context, final GlView view) {
 		mActiveCamera = new Camera();
 
 		mRectangle = new WireframeRectangle(context, this, 1, 1, new Color(0, 0.5f, 0, 1));
 		mActiveCamera.getPosition().setZ(2);
+
+		view.setController(new Controller() {
+
+			@Override
+			public void moveAlongZ(final float amount) {
+				final Coordinate3D currentPosition = mActiveCamera.getPosition();
+				currentPosition.setZ(currentPosition.getZ() + amount);
+			}
+		});
 	}
 
 	@Override

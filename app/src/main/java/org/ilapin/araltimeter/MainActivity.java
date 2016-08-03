@@ -2,7 +2,6 @@ package org.ilapin.araltimeter;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import org.ilapin.araltimeter.graphics.Scene;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 		final GlRenderer renderer = new GlRenderer();
 		glView.setRenderer(renderer);
 
-		final Scene scene = new Scene(this);
+		final Scene scene = new Scene(this, glView);
 		renderer.setScene(scene);
 	}
 }
