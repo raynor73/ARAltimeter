@@ -45,7 +45,6 @@ public class WireframeRectangle implements Renderable, WithShaders {
 	};
 
 	private final float[] mColorData = new float[NUMBER_OF_COLOR_COMPONENTS];
-	private final FloatBuffer mColorBuffer;
 
 	public WireframeRectangle(final Context context, final Scene scene, final float width, final float height,
 							  final Color color) {
@@ -62,7 +61,6 @@ public class WireframeRectangle implements Renderable, WithShaders {
 
 		mModelViewMatrixBuffer = GraphicsUtils.createFloatBuffer(GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS);
 		mProjectionMatrixBuffer = GraphicsUtils.createFloatBuffer(GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS);
-		mColorBuffer = GraphicsUtils.createFloatBuffer(NUMBER_OF_COLOR_COMPONENTS);
 	}
 
 	@Override
