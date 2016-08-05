@@ -7,16 +7,27 @@ import org.ilapin.araltimeter.Controller;
 import org.ilapin.araltimeter.GlView;
 import org.ilapin.araltimeter.math.Coordinate3D;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Scene implements Renderable, WithShaders {
 
 	private final Camera mActiveCamera;
 
-	private final WireframeRectangle mRectangle;
+	private final List<Renderable> mRenderables = new ArrayList<>();
+	private final List<WithShaders> mWithShaders = new ArrayList<>();
 
 	public Scene(final Context context, final GlView view) {
 		mActiveCamera = new Camera();
 
-		mRectangle = new WireframeRectangle(context, this, 1, 1, new Color(0, 0.5f, 0, 1));
+		final WireframeRectangle rectangle = new WireframeRectangle(context, this, 1, 1, new Color(0, 0.5f, 0, 1));
+		final WireframeCompassArrow compassArrow = new WireframeCompassArrow(context, this, 1);
+
+		mRenderables.add(rectangle);
+		mRenderables.add(compassArrow);
+		mWithShaders.add(rectangle);
+		mWithShaders.add(compassArrow);
+
 		mActiveCamera.getPosition().setZ(2);
 
 		view.setController(new Controller() {
@@ -31,7 +42,9 @@ public class Scene implements Renderable, WithShaders {
 
 	@Override
 	public void initShaders() {
-		mRectangle.initShaders();
+		for (final WithShaders withShaders : mWithShaders) {
+			withShaders.initShaders();
+		}
 	}
 
 	@Override
@@ -42,7 +55,10 @@ public class Scene implements Renderable, WithShaders {
 		Preconditions.checkState(viewportWidth > 0 && viewportHeight > 0);
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-		mRectangle.render();
+
+		for (final Renderable renderable : mRenderables) {
+			renderable.render();
+		}
 	}
 
 	public void setViewportSize(final int width, final int height) {
