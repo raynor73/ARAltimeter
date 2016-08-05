@@ -17,8 +17,8 @@ public class WireframeCompassArrow implements Renderable, WithShaders {
 	private static final float WIDTH = 0.25f; // Percentage of length
 
 	private float mLength;
-	private final Color mNorthColor = new Color(0, 0, 0.5f, 1);
-	private final Color mSouthColor = new Color(0.5f, 0, 0, 1);
+	private final Color mNorthColor = new Color(0, 0, 1, 1);
+	private final Color mSouthColor = new Color(1, 0, 0, 1);
 	private Coordinate3D mPosition;
 	private Coordinate3D mRotation;
 
