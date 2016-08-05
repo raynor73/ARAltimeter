@@ -165,9 +165,9 @@ public class WireframeCompassArrow implements Renderable, WithShaders {
 
 	private int initShadersProgram() {
 		final String vertexShaderSource =
-				GraphicsUtils.loadShaderSource(mContext, R.raw.wireframe_rectangle_vertex_shader);
+				GraphicsUtils.loadShaderSource(mContext, R.raw.wireframe_compass_arrow_vertex_shader);
 		final String fragmentShaderSource =
-				GraphicsUtils.loadShaderSource(mContext, R.raw.wireframe_rectangle_fragment_shader);
+				GraphicsUtils.loadShaderSource(mContext, R.raw.wireframe_compass_arrow_fragment_shader);
 
 		final int vertexShaderHandle = GraphicsUtils.compileShader(GLES20.GL_VERTEX_SHADER, vertexShaderSource);
 		final int fragmentShaderHandle = GraphicsUtils.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderSource);
