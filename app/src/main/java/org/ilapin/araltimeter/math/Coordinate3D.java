@@ -42,4 +42,10 @@ public class Coordinate3D {
 	public void setZ(final float z) {
 		mZ = z;
 	}
+
+	public void setCoordinate(final Coordinate3D coordinate) {
+		mX = coordinate.getX();
+		mY = coordinate.getY();
+		mZ = coordinate.getZ();
+	}
 }

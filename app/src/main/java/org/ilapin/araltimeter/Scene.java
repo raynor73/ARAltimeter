@@ -1,11 +1,14 @@
-package org.ilapin.araltimeter.graphics;
+package org.ilapin.araltimeter;
 
 import android.content.Context;
 import android.opengl.GLES20;
+
 import com.google.common.base.Preconditions;
-import org.ilapin.araltimeter.Controller;
-import org.ilapin.araltimeter.GlView;
-import org.ilapin.araltimeter.math.Coordinate3D;
+
+import org.ilapin.araltimeter.graphics.Camera;
+import org.ilapin.araltimeter.graphics.Color;
+import org.ilapin.araltimeter.graphics.Renderable;
+import org.ilapin.araltimeter.graphics.WithShaders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,28 +19,22 @@ public class Scene implements Renderable, WithShaders {
 
 	private final List<Renderable> mRenderables = new ArrayList<>();
 	private final List<WithShaders> mWithShaders = new ArrayList<>();
+	private final WireframeCompassArrow mCompassArrow;
+	private final Model mModel;
 
-	public Scene(final Context context, final GlView view) {
+	public Scene(final Context context, final Model model) {
+		mModel = model;
 		mActiveCamera = new Camera();
 
 		final WireframeRectangle rectangle = new WireframeRectangle(context, this, 1, 1, new Color(0, 0.5f, 0, 1));
-		final WireframeCompassArrow compassArrow = new WireframeCompassArrow(context, this, 1);
+		mCompassArrow = new WireframeCompassArrow(context, this, 1);
 
 		mRenderables.add(rectangle);
-		mRenderables.add(compassArrow);
+		mRenderables.add(mCompassArrow);
 		mWithShaders.add(rectangle);
-		mWithShaders.add(compassArrow);
+		mWithShaders.add(mCompassArrow);
 
 		mActiveCamera.getPosition().setZ(2);
-
-		view.setController(new Controller() {
-
-			@Override
-			public void moveAlongZ(final float amount) {
-				final Coordinate3D currentPosition = mActiveCamera.getPosition();
-				currentPosition.setZ(currentPosition.getZ() + amount);
-			}
-		});
 	}
 
 	@Override
@@ -49,6 +46,8 @@ public class Scene implements Renderable, WithShaders {
 
 	@Override
 	public void render() {
+		mCompassArrow.getRotation().setCoordinate(mModel.getRawCompassArrowRotation());
+
 		final int viewportWidth = mActiveCamera.getWidth();
 		final int viewportHeight = mActiveCamera.getHeight();
 

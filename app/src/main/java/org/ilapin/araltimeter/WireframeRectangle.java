@@ -1,9 +1,14 @@
-package org.ilapin.araltimeter.graphics;
+package org.ilapin.araltimeter;
 
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import org.ilapin.araltimeter.R;
+
+import org.ilapin.araltimeter.graphics.Camera;
+import org.ilapin.araltimeter.graphics.Color;
+import org.ilapin.araltimeter.graphics.GraphicsUtils;
+import org.ilapin.araltimeter.graphics.Renderable;
+import org.ilapin.araltimeter.graphics.WithShaders;
 import org.ilapin.araltimeter.math.Coordinate3D;
 
 import java.nio.FloatBuffer;

@@ -2,7 +2,6 @@ package org.ilapin.araltimeter;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import org.ilapin.araltimeter.graphics.Scene;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
