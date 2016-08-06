@@ -166,6 +166,14 @@ public class WireframeCompassArrow implements Renderable, WithShaders {
 		mRotation = rotation;
 	}
 
+	public Color getNorthColor() {
+		return mNorthColor;
+	}
+
+	public Color getSouthColor() {
+		return mSouthColor;
+	}
+
 	private int initShadersProgram() {
 		final String vertexShaderSource =
 				GraphicsUtils.loadShaderSource(mContext, R.raw.wireframe_compass_arrow_vertex_shader);

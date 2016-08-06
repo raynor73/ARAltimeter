@@ -9,6 +9,7 @@ import org.ilapin.araltimeter.math.Coordinate3D;
 public class MainActivity extends AppCompatActivity {
 
 	private RawCompass mRawCompass;
+	private AverageCompass mAverageCompass;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -22,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
 		glView.setRenderer(renderer);
 
 		mRawCompass = new RawCompass(this);
-		final CompassScene scene = new CompassScene(this, mRawCompass);
+		mAverageCompass = new AverageCompass(this);
+		final CompassScene scene = new CompassScene(this, mRawCompass, mAverageCompass);
 		glView.setController(new Controller() {
 
 			private final Camera mCamera = scene.getActiveCamera();
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onResume();
 
 		mRawCompass.start();
+		mAverageCompass.start();
 	}
 
 	@Override
@@ -49,5 +52,6 @@ public class MainActivity extends AppCompatActivity {
 		super.onPause();
 
 		mRawCompass.stop();
+		mAverageCompass.stop();
 	}
 }

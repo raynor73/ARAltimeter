@@ -3,20 +3,27 @@ package org.ilapin.araltimeter;
 import android.content.Context;
 import android.hardware.SensorManager;
 
+import org.ilapin.araltimeter.graphics.Color;
 import org.ilapin.araltimeter.graphics.Renderable;
 import org.ilapin.araltimeter.graphics.WithShaders;
 import org.ilapin.araltimeter.math.Coordinate3D;
-import org.ilapin.araltimeter.sensors.RawCompassSensor;
+import org.ilapin.araltimeter.sensors.AverageCompassSensor;
 import org.ilapin.araltimeter.sensors.Sensor;
 
-public class RawCompass implements Renderable, WithShaders, Sensor {
+public class AverageCompass implements Renderable, WithShaders, Sensor {
 
-	private final RawCompassSensor mCompassSensor;
+	private final AverageCompassSensor mCompassSensor;
 	private final WireframeCompassArrow mCompassArrow;
 
-	public RawCompass(final Context context) {
-		mCompassSensor = new RawCompassSensor((SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
+	public AverageCompass(final Context context) {
+		mCompassSensor = new AverageCompassSensor((SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
 		mCompassArrow = new WireframeCompassArrow(context, 1);
+
+		final Color northColor = mCompassArrow.getNorthColor();
+		northColor.setRed(0);
+		northColor.setGreen(1);
+		northColor.setBlue(1);
+		northColor.setAlpha(1);
 	}
 
 	@Override
@@ -43,4 +50,5 @@ public class RawCompass implements Renderable, WithShaders, Sensor {
 	public void stop() {
 		mCompassSensor.stop();
 	}
+
 }

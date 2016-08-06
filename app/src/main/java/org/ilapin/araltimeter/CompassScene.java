@@ -20,15 +20,18 @@ public class CompassScene implements Scene {
 	private final List<Renderable> mRenderables = new ArrayList<>();
 	private final List<WithShaders> mWithShaders = new ArrayList<>();
 
-	public CompassScene(final Context context, final RawCompass rawCompass) {
+	public CompassScene(final Context context, final RawCompass rawCompass, final AverageCompass averageCompass) {
 		mActiveCamera = new Camera();
 
 		final WireframeRectangle rectangle = new WireframeRectangle(context, 1, 1, new Color(0, 0.5f, 0, 1));
 
 		mRenderables.add(rectangle);
 		mRenderables.add(rawCompass);
+		mRenderables.add(averageCompass);
+
 		mWithShaders.add(rectangle);
 		mWithShaders.add(rawCompass);
+		mWithShaders.add(averageCompass);
 
 		mActiveCamera.getPosition().setZ(2);
 	}
