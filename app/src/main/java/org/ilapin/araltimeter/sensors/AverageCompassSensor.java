@@ -1,17 +1,17 @@
-package org.ilapin.araltimeter;
+package org.ilapin.araltimeter.sensors;
 
 import android.hardware.SensorManager;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-public class AverageCompass extends RawCompass {
+public class AverageCompassSensor extends RawCompassSensor {
 	private static final int STATISTICS_WINDOW_SIZE = 100;
 
 	private final DescriptiveStatistics mAzimuthStatistics = new DescriptiveStatistics(STATISTICS_WINDOW_SIZE);
 	private final DescriptiveStatistics mPitchStatistics = new DescriptiveStatistics(STATISTICS_WINDOW_SIZE);
 	private final DescriptiveStatistics mRollStatistics = new DescriptiveStatistics(STATISTICS_WINDOW_SIZE);
 
-	public AverageCompass(final SensorManager sensorManager) {
+	public AverageCompassSensor(final SensorManager sensorManager) {
 		super(sensorManager);
 	}
 

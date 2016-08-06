@@ -1,6 +1,8 @@
 package org.ilapin.araltimeter.graphics;
 
+import org.ilapin.araltimeter.Scene;
+
 public interface Renderable {
 
-	void render();
+	void render(Scene scene);
 }

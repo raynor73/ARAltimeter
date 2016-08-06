@@ -27,7 +27,6 @@ public class WireframeRectangle implements Renderable, WithShaders {
 	private Coordinate3D mRotation;
 
 	private final Context mContext;
-	private final Scene mScene;
 
 	private int mShaderProgramLocation;
 	private int mVertexBufferLocation;
@@ -51,10 +50,8 @@ public class WireframeRectangle implements Renderable, WithShaders {
 
 	private final float[] mColorData = new float[NUMBER_OF_COLOR_COMPONENTS];
 
-	public WireframeRectangle(final Context context, final Scene scene, final float width, final float height,
-							  final Color color) {
+	public WireframeRectangle(final Context context, final float width, final float height, final Color color) {
 		mContext = context;
-		mScene = scene;
 
 		mWidth = width;
 		mHeight = height;
@@ -87,8 +84,8 @@ public class WireframeRectangle implements Renderable, WithShaders {
 	}
 
 	@Override
-	public void render() {
-		final Camera camera = mScene.getActiveCamera();
+	public void render(final Scene scene) {
+		final Camera camera = scene.getActiveCamera();
 		final Coordinate3D cameraPosition = camera.getPosition();
 
 		GLES20.glUseProgram(mShaderProgramLocation);

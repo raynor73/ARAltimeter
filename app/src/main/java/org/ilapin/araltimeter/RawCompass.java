@@ -1,104 +1,46 @@
 package org.ilapin.araltimeter;
 
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+import android.content.Context;
 import android.hardware.SensorManager;
 
-public class RawCompass {
-	private final SensorManager mSensorManager;
+import org.ilapin.araltimeter.graphics.Renderable;
+import org.ilapin.araltimeter.graphics.WithShaders;
+import org.ilapin.araltimeter.math.Coordinate3D;
+import org.ilapin.araltimeter.sensors.RawCompassSensor;
+import org.ilapin.araltimeter.sensors.Sensor;
 
-	private float mAzimuth;
-	private float mPitch;
-	private float mRoll;
+public class RawCompass implements Renderable, WithShaders, Sensor {
 
-	private final float[] mMagneticFiledVector = new float[3];
-	private final float[] mAccelerometerVector = new float[3];
+	private final RawCompassSensor mRawCompassSensor;
+	private final WireframeCompassArrow mCompassArrow;
 
-	private final float[] mR = new float[9];
-	private final float[] mI = new float[9];
-	private final float[] mOrientation = new float[3];
-	private final float[] mCameraRotation = new float[9];
-
-	private final SensorEventListener mMagneticFieldListener = new SensorEventListener() {
-
-		@Override
-		public void onSensorChanged(final SensorEvent sensorEvent) {
-			System.arraycopy(sensorEvent.values, 0, mMagneticFiledVector, 0, 3);
-			calculateAngles();
-		}
-
-		@Override
-		public void onAccuracyChanged(final Sensor sensor, final int i) {
-			// do nothing
-		}
-	};
-
-	private final SensorEventListener mAccelerometerListener = new SensorEventListener() {
-
-		@Override
-		public void onSensorChanged(final SensorEvent sensorEvent) {
-			System.arraycopy(sensorEvent.values, 0, mAccelerometerVector, 0, 3);
-			calculateAngles();
-		}
-
-		@Override
-		public void onAccuracyChanged(final Sensor sensor, final int i) {
-			// do nothing
-		}
-	};
-
-	public RawCompass(final SensorManager sensorManager) {
-		mSensorManager = sensorManager;
+	public RawCompass(final Context context) {
+		mRawCompassSensor = new RawCompassSensor((SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
+		mCompassArrow = new WireframeCompassArrow(context, 1);
 	}
 
+	@Override
+	public void render(final Scene scene) {
+		final Coordinate3D arrowRotation = mCompassArrow.getRotation();
+		arrowRotation.setX((float) Math.toDegrees(mRawCompassSensor.getPitch()) - 90);
+		arrowRotation.setY((float) Math.toDegrees(-mRawCompassSensor.getRoll()));
+		arrowRotation.setZ((float) Math.toDegrees(mRawCompassSensor.getAzimuth()));
+
+		mCompassArrow.render(scene);
+	}
+
+	@Override
+	public void initShaders() {
+		mCompassArrow.initShaders();
+	}
+
+	@Override
 	public void start() {
-		mSensorManager.registerListener(
-				mMagneticFieldListener,
-				mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-				SensorManager.SENSOR_DELAY_GAME
-		);
-
-		mSensorManager.registerListener(
-				mAccelerometerListener,
-				mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_GAME
-		);
+		mRawCompassSensor.start();
 	}
 
+	@Override
 	public void stop() {
-		mSensorManager.unregisterListener(mMagneticFieldListener);
-		mSensorManager.unregisterListener(mAccelerometerListener);
-	}
-
-	public float getAzimuth() {
-		return mAzimuth;
-	}
-
-	public float getPitch() {
-		return mPitch;
-	}
-
-	public float getRoll() {
-		return mRoll;
-	}
-
-	private void calculateAngles() {
-		if (SensorManager.getRotationMatrix(mR, mI, mAccelerometerVector, mMagneticFiledVector)) {
-			SensorManager.remapCoordinateSystem(mR, SensorManager.AXIS_X, SensorManager.AXIS_Z, mCameraRotation);
-			SensorManager.getOrientation(mCameraRotation, mOrientation);
-
-			onRawAnglesCalculated(mOrientation[0], mOrientation[1], mOrientation[2]);
-		}
-	}
-
-	protected final void setCalculatedAngles(final float azimuth, final float pitch, final float roll) {
-		mAzimuth = azimuth;
-		mPitch = pitch;
-		mRoll = roll;
-	}
-
-	protected void onRawAnglesCalculated(final float azimuth, final float pitch, final float roll) {
-		setCalculatedAngles(azimuth, pitch, roll);
+		mRawCompassSensor.stop();
 	}
 }
