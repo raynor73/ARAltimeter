@@ -17,9 +17,9 @@ public class AverageCompassSensor extends RawCompassSensor {
 
 	@Override
 	protected void onRawAnglesCalculated(final float azimuth, final float pitch, final float roll) {
-		mAzimuthStatistics.addValue(Math.toDegrees(azimuth));
-		mPitchStatistics.addValue(Math.toDegrees(pitch));
-		mRollStatistics.addValue(Math.toDegrees(roll));
+		mAzimuthStatistics.addValue(azimuth);
+		mPitchStatistics.addValue(pitch);
+		mRollStatistics.addValue(roll);
 
 		setCalculatedAngles(
 				(float) mAzimuthStatistics.getMean(),
