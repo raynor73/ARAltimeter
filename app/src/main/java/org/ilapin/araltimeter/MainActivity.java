@@ -10,6 +10,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private RawCompass mRawCompass;
 	private AverageCompass mAverageCompass;
+	private CameraPreview mCameraPreview;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
 		mRawCompass = new RawCompass(this);
 		mAverageCompass = new AverageCompass(this);
-		final CompassScene scene = new CompassScene(this, mRawCompass, mAverageCompass);
+		mCameraPreview = new CameraPreview(this, 1, 1);
+		final CompassScene scene = new CompassScene(this, mCameraPreview, mRawCompass, mAverageCompass);
 		glView.setController(new Controller() {
 
 			private final Camera mCamera = scene.getActiveCamera();
