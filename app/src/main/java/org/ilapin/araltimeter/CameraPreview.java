@@ -1,6 +1,7 @@
 package org.ilapin.araltimeter;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -10,11 +11,14 @@ import org.ilapin.araltimeter.graphics.GraphicsUtils;
 import org.ilapin.araltimeter.graphics.Renderable;
 import org.ilapin.araltimeter.graphics.WithShaders;
 import org.ilapin.araltimeter.math.Coordinate3D;
+import org.ilapin.araltimeter.sensors.Sensor;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class CameraPreview implements Renderable, WithShaders {
+@SuppressWarnings("deprecation")
+public class CameraPreview implements Renderable, WithShaders, Sensor {
 
 	private static final int NUMBER_OF_VERTICES = 4;
 	private static final int NUMBER_OF_VERTEX_DIMENSIONS = 3;
@@ -46,6 +50,15 @@ public class CameraPreview implements Renderable, WithShaders {
 			2, 3, 0
 	};
 	private final float[] mModelViewMatrix = new float[GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS];
+	private android.hardware.Camera mCamera;
+	private SurfaceTexture mSurfaceTexture;
+	private final SurfaceTexture.OnFrameAvailableListener mOnFrameAvailableListener = new SurfaceTexture.OnFrameAvailableListener() {
+
+		@Override
+		public void onFrameAvailable(final SurfaceTexture surfaceTexture) {
+			// do nothing
+		}
+	};
 
 	public CameraPreview(final Context context, final float width, final float height) {
 		mContext = context;
@@ -133,6 +146,9 @@ public class CameraPreview implements Renderable, WithShaders {
 
 		mTextureLocation = initTexture();
 
+		mSurfaceTexture = new SurfaceTexture(mTextureLocation);
+		mSurfaceTexture.setOnFrameAvailableListener(mOnFrameAvailableListener);
+
 		GraphicsUtils.checkLocation(mPositionAttributeLocation, "Can't acquire position attribute");
 		GraphicsUtils.checkLocation(mProjectionUniformLocation, "Can't acquire projection uniform");
 		GraphicsUtils.checkLocation(mModelViewUniformLocation, "Can't acquire modelView uniform");
@@ -147,6 +163,21 @@ public class CameraPreview implements Renderable, WithShaders {
 	public void setWidth(final float width) {
 		mWidth = width;
 		recalculateVertices();
+	}
+
+	@Override
+	public void start() {
+		mCamera = android.hardware.Camera.open();
+		try {
+			mCamera.setPreviewTexture(mSurfaceTexture);
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void stop() {
+		mCamera.release();
 	}
 
 	public float getHeight() {

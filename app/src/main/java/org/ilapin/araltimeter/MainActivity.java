@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onResume();
 
 		mRawCompass.start();
+		mCameraPreview.start();
 		mAverageCompass.start();
 	}
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onPause();
 
 		mRawCompass.stop();
+		mCameraPreview.stop();
 		mAverageCompass.stop();
 	}
 }
