@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
 		mRawCompass = new RawCompass(this);
 		mAverageCompass = new AverageCompass(this);
-		mCameraPreview = new CameraPreview(this, 1, 1);
+		mCameraPreview = new CameraPreview(this);
 		final CompassScene scene = new CompassScene(this, mCameraPreview, mRawCompass, mAverageCompass);
 		glView.setController(new Controller() {
 
