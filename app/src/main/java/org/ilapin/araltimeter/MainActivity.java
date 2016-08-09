@@ -1,8 +1,9 @@
 package org.ilapin.araltimeter;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-
 import org.ilapin.araltimeter.graphics.Camera;
 import org.ilapin.araltimeter.math.Coordinate3D;
 
@@ -41,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
 		renderer.setScene(scene);
 	}
 
+	private final Handler mHandler = new Handler(Looper.getMainLooper());
 	@Override
 	protected void onResume() {
 		super.onResume();
 
 		mRawCompass.start();
-		mCameraPreview.start();
+		mHandler.postDelayed(() -> mCameraPreview.start(), 1000);
 		mAverageCompass.start();
 	}
 

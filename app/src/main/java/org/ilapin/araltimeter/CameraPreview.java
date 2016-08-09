@@ -5,7 +5,6 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-
 import org.ilapin.araltimeter.graphics.Camera;
 import org.ilapin.araltimeter.graphics.GraphicsUtils;
 import org.ilapin.araltimeter.graphics.Renderable;
@@ -79,6 +78,8 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 		final Camera camera = scene.getActiveCamera();
 		final Coordinate3D cameraPosition = camera.getPosition();
 
+		mSurfaceTexture.updateTexImage();
+
 		GLES20.glUseProgram(mShaderProgramLocation);
 
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mVertexBufferLocation);
@@ -86,7 +87,7 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTextureLocation);
-		GLES20.glUniform1i(mTextureLocation, 0);
+		GLES20.glUniform1i(mTextureUniformLocation, 0);
 
 		GLES20.glEnableVertexAttribArray(mPositionAttributeLocation);
 		GLES20.glEnableVertexAttribArray(mTextureCoordinateAttributeLocation);
@@ -154,6 +155,7 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 		GraphicsUtils.checkLocation(mModelViewUniformLocation, "Can't acquire modelView uniform");
 		GraphicsUtils.checkLocation(mTextureCoordinateAttributeLocation, "Can't acquire texture coordinate attribute");
 		GraphicsUtils.checkLocation(mTextureUniformLocation, "Can't acquire texture uniform");
+		GraphicsUtils.checkLocation(mTextureLocation, "Can't acquire texture");
 	}
 
 	public float getWidth() {
@@ -173,6 +175,7 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
+		mCamera.startPreview();
 	}
 
 	@Override
