@@ -104,8 +104,6 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_INT, 0);
 
-		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
-
 		GLES20.glDisableVertexAttribArray(mTextureCoordinateAttributeLocation);
 		GLES20.glDisableVertexAttribArray(mPositionAttributeLocation);
 	}
@@ -204,9 +202,8 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 	}
 
 	private void recalculateVertices() {
-		final android.hardware.Camera.Size previewSize = mCamera.getParameters().getPictureSize();
-		final float halfWidth = 1f;
-		final float halfHeight = 1f; //(float) previewSize.height / previewSize.width / 2;
+		final float halfWidth = 1;
+		final float halfHeight = 1;
 
 		// top left
 		mVertices[0] = -halfWidth;

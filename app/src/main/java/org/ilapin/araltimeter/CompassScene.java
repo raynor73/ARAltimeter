@@ -2,9 +2,7 @@ package org.ilapin.araltimeter;
 
 import android.content.Context;
 import android.opengl.GLES20;
-
 import com.google.common.base.Preconditions;
-
 import org.ilapin.araltimeter.graphics.Camera;
 import org.ilapin.araltimeter.graphics.Color;
 import org.ilapin.araltimeter.graphics.Renderable;
@@ -17,6 +15,7 @@ public class CompassScene implements Scene {
 
 	private final Camera mActiveCamera;
 
+	private final List<Renderable> mBackgoundRenderables = new ArrayList<>();
 	private final List<Renderable> mRenderables = new ArrayList<>();
 	private final List<WithShaders> mWithShaders = new ArrayList<>();
 
@@ -29,7 +28,7 @@ public class CompassScene implements Scene {
 		mRenderables.add(rectangle);
 		mRenderables.add(rawCompass);
 		mRenderables.add(averageCompass);
-		mRenderables.add(cameraPreview);
+		mBackgoundRenderables.add(cameraPreview);
 
 		mWithShaders.add(rectangle);
 		mWithShaders.add(rawCompass);
@@ -53,6 +52,12 @@ public class CompassScene implements Scene {
 		Preconditions.checkState(viewportWidth > 0 && viewportHeight > 0);
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+		for (final Renderable renderable : mBackgoundRenderables) {
+			renderable.render(this);
+		}
+
+		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
 
 		for (final Renderable renderable : mRenderables) {
 			renderable.render(this);
