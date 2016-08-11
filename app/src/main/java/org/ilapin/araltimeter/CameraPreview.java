@@ -2,9 +2,10 @@ package org.ilapin.araltimeter;
 
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
-import android.util.DisplayMetrics;
+import android.opengl.Matrix;
 import android.view.Surface;
 import android.widget.Toast;
 import org.ilapin.araltimeter.graphics.GraphicsUtils;
@@ -14,6 +15,7 @@ import org.ilapin.araltimeter.sensors.Sensor;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class CameraPreview implements Renderable, WithShaders, Sensor {
@@ -31,6 +33,7 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 	private int mTextureUniformLocation;
 	private int mTextureCoordinateAttributeLocation;
 	private int mTextureLocation;
+	private int mProjectionUniformLocation;
 
 	private final float[] mVertices =
 			new float[NUMBER_OF_VERTICES * (NUMBER_OF_VERTEX_DIMENSIONS + NUMBER_OF_TEXTURE_DIMENSIONS)];
@@ -47,6 +50,10 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 		mActivity = activity;
 	}
 
+	private final float[] mIdentityMatrix = new float[GraphicsUtils.NUMBER_OF_MATRIX_ELEMENTS];
+	{
+		Matrix.setIdentityM(mIdentityMatrix, 0);
+	}
 	@Override
 	public void render(final Scene scene) {
 		mSurfaceTexture.updateTexImage();
@@ -87,6 +94,13 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 				(NUMBER_OF_VERTEX_DIMENSIONS + NUMBER_OF_TEXTURE_DIMENSIONS) * GraphicsUtils.BYTES_IN_FLOAT,
 				NUMBER_OF_VERTEX_DIMENSIONS * GraphicsUtils.BYTES_IN_FLOAT
 		);
+		GLES20.glUniformMatrix4fv(
+				mProjectionUniformLocation,
+				1,
+				false,
+				mIdentityMatrix,//scene.getActiveCamera().getOrthoProjectionMatrix(),
+				0
+		);
 
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_INT, 0);
 
@@ -103,6 +117,7 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 		mPositionAttributeLocation = GLES20.glGetAttribLocation(mShaderProgramLocation, "position");
 		mTextureCoordinateAttributeLocation = GLES20.glGetAttribLocation(mShaderProgramLocation, "textureCoordinate");
 		mTextureUniformLocation = GLES20.glGetUniformLocation(mShaderProgramLocation, "texture");
+		mProjectionUniformLocation = GLES20.glGetUniformLocation(mShaderProgramLocation, "projection");
 
 		mTextureLocation = initTexture();
 
@@ -112,6 +127,7 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 		GraphicsUtils.checkLocation(mTextureCoordinateAttributeLocation, "Can't acquire texture coordinate attribute");
 		GraphicsUtils.checkLocation(mTextureUniformLocation, "Can't acquire texture uniform");
 		GraphicsUtils.checkLocation(mTextureLocation, "Can't acquire texture");
+		GraphicsUtils.checkLocation(mProjectionUniformLocation, "Can't acquire projection uniform");
 	}
 
 	@Override
@@ -122,6 +138,17 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 			Toast.makeText(mActivity, "Can't open camera", Toast.LENGTH_SHORT).show();
 			return;
 		}
+
+		final Camera.Parameters cameraParameters = mCamera.getParameters();
+		final List<Camera.Size> supportedPreviewSizes = cameraParameters.getSupportedPreviewSizes();
+		Camera.Size selectedSize = null;
+		for (final Camera.Size size : supportedPreviewSizes) {
+			if (selectedSize == null || (size.width > selectedSize.width && size.height > selectedSize.height)) {
+				selectedSize = size;
+			}
+		}
+		cameraParameters.setPreviewSize(selectedSize.width, selectedSize.height);
+		mCamera.setParameters(cameraParameters);
 
 		try {
 			mCamera.setPreviewTexture(mSurfaceTexture);
@@ -177,10 +204,9 @@ public class CameraPreview implements Renderable, WithShaders, Sensor {
 	}
 
 	private void recalculateVertices() {
-		final DisplayMetrics displayMetrics = mActivity.getResources().getDisplayMetrics();
-		final android.hardware.Camera.Size previewSize = mCamera.getParameters().getPreviewSize();
-		final float halfWidth = 0.5f;
-		final float halfHeight = (float) previewSize.height / displayMetrics.heightPixels / 2;
+		final android.hardware.Camera.Size previewSize = mCamera.getParameters().getPictureSize();
+		final float halfWidth = 1f;
+		final float halfHeight = 1f; //(float) previewSize.height / previewSize.width / 2;
 
 		// top left
 		mVertices[0] = -halfWidth;

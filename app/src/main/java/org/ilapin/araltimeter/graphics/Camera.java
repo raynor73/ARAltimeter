@@ -1,7 +1,6 @@
 package org.ilapin.araltimeter.graphics;
 
 import android.opengl.Matrix;
-
 import org.ilapin.araltimeter.math.Coordinate3D;
 
 public class Camera {
@@ -10,23 +9,24 @@ public class Camera {
 	private Coordinate3D mRotation = new Coordinate3D();
 	private int mWidth;
 	private int mHeight;
-	private float[] mProjectionMatrix;
+	private final float[] mFrustumProjectionMatrix = new float[16];
+	private final float[] mOrthoProjectionMatrix = new float[16];
 
 	public Camera() {}
 
-	public Camera(final int width, final int height) {
-		mWidth = width;
-		mHeight = height;
-	}
-
 	public void updateProjectionMatrix() {
 		final float aspectRatio = (float) mWidth / mHeight;
-		mProjectionMatrix = new float[16];
-		Matrix.frustumM(mProjectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, 1, 1000);
+
+		Matrix.frustumM(mFrustumProjectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, 1, 1000);
+		Matrix.orthoM(mOrthoProjectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, -1, 1);
 	}
 
-	public float[] getProjectionMatrix() {
-		return mProjectionMatrix;
+	public float[] getFrustumProjectionMatrix() {
+		return mFrustumProjectionMatrix;
+	}
+
+	public float[] getOrthoProjectionMatrix() {
+		return mOrthoProjectionMatrix;
 	}
 
 	public void setPosition(final Coordinate3D position) {

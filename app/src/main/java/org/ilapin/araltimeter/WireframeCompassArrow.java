@@ -3,7 +3,6 @@ package org.ilapin.araltimeter;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-
 import org.ilapin.araltimeter.graphics.Camera;
 import org.ilapin.araltimeter.graphics.Color;
 import org.ilapin.araltimeter.graphics.GraphicsUtils;
@@ -91,7 +90,7 @@ public class WireframeCompassArrow implements Renderable, WithShaders {
 		Matrix.rotateM(mModelViewMatrix, 0, mRotation.getZ(), 0, 0, 1);
 		GraphicsUtils.copyDataToBuffer(mModelViewMatrix, mModelViewMatrixBuffer);
 
-		GraphicsUtils.copyDataToBuffer(camera.getProjectionMatrix(), mProjectionMatrixBuffer);
+		GraphicsUtils.copyDataToBuffer(camera.getFrustumProjectionMatrix(), mProjectionMatrixBuffer);
 
 		GLES20.glVertexAttribPointer(
 				mPositionAttributeLocation,
